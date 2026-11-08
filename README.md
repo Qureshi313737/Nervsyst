@@ -1,5 +1,7 @@
 # Neuromap — 3D Nervous System Atlas
 
+**Live preview:** https://qureshi313737.github.io/Nervsyst/
+
 An interactive, cinematic 3D model of the human nervous system, built for learning.
 Every nerve, brain region and spinal segment is clickable and opens a detailed
 anatomical dossier: origin, course, motor and sensory supply, branches, clinical
@@ -19,7 +21,7 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-Any static host works too (GitHub Pages, Netlify, etc.). Three.js r170 loads from
+The live preview is deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. Any other static host works too. Three.js r170 loads from
 the jsDelivr CDN, so the first load needs internet access.
 
 ## What is modelled
