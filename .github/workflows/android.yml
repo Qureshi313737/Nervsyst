@@ -42,7 +42,13 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease bundleRelease --no-daemon --stacktrace
+          # retry: the Gradle distribution download occasionally fails with a 5xx
+          for attempt in 1 2 3; do
+            ./gradlew assembleRelease bundleRelease --no-daemon --stacktrace && exit 0
+            echo "Build attempt $attempt failed; retrying in $((attempt * 20))s"
+            sleep $((attempt * 20))
+          done
+          exit 1
 
       - name: Collect outputs
         run: |
