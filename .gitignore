@@ -7,3 +7,4 @@ android/local.properties
 *.apk
 *.aab
 marketing/.www/
+marketing/.frames/
