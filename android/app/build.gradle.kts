@@ -6,24 +6,35 @@ val runNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
 
 android {
     namespace = "com.neuromap.atlas"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.neuromap.atlas"
+        applicationId = "com.lumifya.neuromap"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = runNumber
-        versionName = "1.0.$runNumber"
+        versionName = "1.1.$runNumber"
     }
 
-    // Public sideload key kept in the repo so every build can update the
-    // previous install. It is not a secret; use your own key for a store release.
+    // Release signing. In CI, a private Play upload key is used when the
+    // NEUROMAP_KEYSTORE_* environment variables are set (from GitHub secrets).
+    // Otherwise the public sideload key kept in the repo is used, so local and
+    // fork builds still produce an installable APK. Never use the public key
+    // as your Play upload key.
+    val privateKs = System.getenv("NEUROMAP_KEYSTORE_FILE")?.let { file(it) }?.takeIf { it.exists() }
     signingConfigs {
         create("sideload") {
-            storeFile = file("neuromap.keystore")
-            storePassword = "neuromap"
-            keyAlias = "neuromap"
-            keyPassword = "neuromap"
+            if (privateKs != null) {
+                storeFile = privateKs
+                storePassword = System.getenv("NEUROMAP_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("NEUROMAP_KEY_ALIAS")
+                keyPassword = System.getenv("NEUROMAP_KEY_PASSWORD")
+            } else {
+                storeFile = file("neuromap.keystore")
+                storePassword = "neuromap"
+                keyAlias = "neuromap"
+                keyPassword = "neuromap"
+            }
         }
     }
 

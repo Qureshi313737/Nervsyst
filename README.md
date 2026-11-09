@@ -1,5 +1,7 @@
 # Neuromap — 3D Nervous System Atlas
 
+*An educational product of **Lumifya**.*
+
 **Live preview:** https://qureshi313737.github.io/Nervsyst/
 
 An interactive, cinematic 3D model of the human nervous system, built for learning.
@@ -10,8 +12,20 @@ correlation, how it is examined, and a memory aid.
 Functionality is deliberately simple (filter → look → click → read) so the focus
 stays on the anatomy.
 
+## Google Play
+
+Everything for the Play Store listing is in [`store/`](store/README.md):
+- the step-by-step Play Console guide with every answer
+- listing text in English, Hindi and Urdu
+- the privacy policy
+- icon, feature graphic, phone and tablet screenshots
+- a promotional video
+
+All images and the video are rendered in code from the real app by the scripts in `marketing/`. The Android package ID is `com.lumifya.neuromap`, and the app targets API 36 (Android 16).
+
 ## What's inside
 
+- **Lumifya studio intro:** a neural spark bursts into points of light that form the LUMIFYA wordmark and then dissolve into the Neuromap title. The 3D scene builds while the wordmark holds. Tap to skip.
 - **Three scales of organisation:** *Body* (whole nervous system), *Nerve fibre* (epineurium → perineurium → fascicles → myelinated and unmyelinated fibres, with saltatory conduction) and *Neuron* (motor neuron → myelinated axon → neuromuscular junction, animated from synaptic input to muscle contraction). Every part is clickable.
 - **Six cinematic pathway tours:** a glowing signal travels real routes while the camera tracks it and captions explain each relay.
   - Knee-jerk reflex arc
@@ -44,7 +58,7 @@ when Android asks. Needs Android 8.0+. The app works fully offline: three.js and
 fonts are bundled inside the APK.
 
 The APK and AAB are built by `.github/workflows/android.yml` on every push to `main` and attached
-to a GitHub Release. Both target Android 15 (API 35), as Google Play requires. To build it yourself (needs the Android SDK and JDK 17):
+to a GitHub Release. Both target Android 16 (API 36), which Google Play requires for new apps. To build it yourself (needs the Android SDK and JDK 17):
 
 ```bash
 npm ci

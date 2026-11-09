@@ -534,3 +534,11 @@ body.micro.has-info #microbar { display: none; }
 body[data-lang="hi"] :is(.eyebrow, .list-head, .tag3d, .select, .brand p, .intro-sub, .count, .badge),
 body[data-lang="ur"] :is(.eyebrow, .list-head, .tag3d, .select, .brand p, .intro-sub, .count, .badge) { letter-spacing: 0; text-transform: none; }
 body[data-lang="hi"] .eyebrow, body[data-lang="ur"] .eyebrow { font-family: var(--f-body); font-size: 12px; font-weight: 600; }
+
+/* Lumifya studio intro */
+#splash { position: fixed; inset: 0; z-index: 60; background: #010204; cursor: pointer; }
+#splash canvas { display: block; }
+.intro-by { margin: 14px 0 0; font: 500 11px var(--f-mono); letter-spacing: 0.32em; text-transform: uppercase; color: #8fa2b8; }
+.intro-by span { color: var(--gold); }
+.credit { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.credit a { color: var(--cyan); }
