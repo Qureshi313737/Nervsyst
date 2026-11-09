@@ -1,0 +1,16 @@
+{
+  "name": "neuromap",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive 3D atlas of the human nervous system",
+  "scripts": {
+    "build:www": "node scripts/build-www.mjs",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "@fontsource/cormorant-garamond": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "three": "0.170.0"
+  }
+}
