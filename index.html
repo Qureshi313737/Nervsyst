@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Neuromap Atlas</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Interactive 3D atlas of the human nervous system with filters and clickable nerves.">
+<meta name="description" content="Interactive 3D atlas of the human nervous system with filters, guided pathway tours, micro levels and clickable, referenced anatomy in English, Hindi and Urdu.">
+<meta name="theme-color" content="#03060b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 {
@@ -31,21 +32,54 @@
   </div>
   <div class="brand-text">
     <h1>Neuromap</h1>
-    <p>Systema nervosum · 3D atlas</p>
+    <p data-i18n="tagline">Systema nervosum · 3D atlas</p>
   </div>
 </header>
 
+<div id="topbar">
+  <div class="seg" role="group" aria-label="Scale">
+    <button type="button" data-scale="body" data-i18n="sc_body">Body</button>
+    <button type="button" data-scale="nerve" data-i18n="sc_nerve">Nerve fibre</button>
+    <button type="button" data-scale="neuron" data-i18n="sc_neuron">Neuron</button>
+  </div>
+  <button id="btn-tours" class="pill" type="button">
+    <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></svg><span data-i18n="tours">Tours</span>
+  </button>
+  <button id="btn-quiz" class="pill" type="button">
+    <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M9.2 9a3 3 0 1 1 4.3 2.7c-.9.4-1.5 1.1-1.5 2.1v.7M12 18h.01" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg><span data-i18n="quiz">Quiz</span>
+  </button>
+  <label class="mini">
+    <span class="sr" data-i18n="level">Level</span>
+    <select id="level-sel" aria-label="Learning level">
+      <option value="basic" data-i18n="lvl_basic">Basic</option>
+      <option value="standard" data-i18n="lvl_standard">Standard</option>
+      <option value="advanced" data-i18n="lvl_advanced">Advanced</option>
+    </select>
+  </label>
+  <label class="mini">
+    <span class="sr">Language</span>
+    <select id="lang-sel" aria-label="Language">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="ur">اردو</option>
+    </select>
+  </label>
+  <button id="btn-sources" class="icon-btn" type="button" aria-label="Sources and accuracy">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM17 7.5h2V20" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/><path d="M8.5 9h5M8.5 12.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
 <aside id="panel" aria-label="Filters and structures">
   <div id="filters"></div>
-  <p id="filter-note" class="filter-note"></p>
+  <p id="filter-note" class="filter-note" dir="auto"></p>
   <section class="listwrap">
     <div class="list-top">
-      <h3 class="eyebrow">Structures</h3>
+      <h3 class="eyebrow" data-i18n="structures">Structures</h3>
       <span id="list-count" class="count"></span>
     </div>
     <label class="search">
       <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input id="search" type="search" placeholder="Search: median, vagus, L5…" autocomplete="off" aria-label="Search structures">
+      <input id="search" type="search" data-i18n-ph="search" placeholder="Search: median, vagus, L5…" autocomplete="off" aria-label="Search structures" dir="auto">
     </label>
     <ul id="list"></ul>
   </section>
@@ -53,8 +87,9 @@
 
 <aside id="info" hidden aria-labelledby="info-title">
   <div class="info-actions">
-    <button id="btn-focus" class="ghost-btn" type="button">Focus</button>
-    <button id="btn-isolate" class="ghost-btn" type="button">Isolate</button>
+    <button id="btn-inside" class="ghost-btn" type="button" hidden data-i18n="inside">Zoom inside the nerve</button>
+    <button id="btn-focus" class="ghost-btn" type="button" data-i18n="focus">Focus</button>
+    <button id="btn-isolate" class="ghost-btn" type="button" data-i18n="isolate">Isolate</button>
     <button id="btn-close" class="icon-btn" type="button" aria-label="Close details">
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
@@ -63,46 +98,134 @@
 </aside>
 
 <nav id="toolbar" aria-label="View controls">
-  <div class="tgroup" role="group" aria-label="Camera views">
-    <button type="button" class="tbtn" data-view="body">Body</button>
-    <button type="button" class="tbtn" data-view="head">Head</button>
-    <button type="button" class="tbtn" data-view="spine">Spine</button>
-    <button type="button" class="tbtn" data-view="arm">Arm</button>
-    <button type="button" class="tbtn" data-view="leg">Leg</button>
+  <div class="tgroup views" role="group" aria-label="Camera views">
+    <button type="button" class="tbtn" data-view="body" data-i18n="v_body">Body</button>
+    <button type="button" class="tbtn" data-view="head" data-i18n="v_head">Head</button>
+    <button type="button" class="tbtn" data-view="spine" data-i18n="v_spine">Spine</button>
+    <button type="button" class="tbtn" data-view="arm" data-i18n="v_arm">Arm</button>
+    <button type="button" class="tbtn" data-view="leg" data-i18n="v_leg">Leg</button>
   </div>
-  <div class="tgroup" role="group" aria-label="Layers">
-    <button type="button" class="tbtn tog" id="t-skin" aria-pressed="true">Skin</button>
-    <button type="button" class="tbtn tog" id="t-skeleton" aria-pressed="true">Skeleton</button>
-    <button type="button" class="tbtn tog" id="t-organs" aria-pressed="true">Organs</button>
-    <button type="button" class="tbtn tog" id="t-labels" aria-pressed="true">Labels</button>
-    <button type="button" class="tbtn tog" id="t-signals" aria-pressed="true">Signals</button>
-    <button type="button" class="tbtn tog" id="t-rotate" aria-pressed="true">Rotate</button>
-    <button type="button" class="tbtn tog" id="t-isolate" aria-pressed="false" title="Hide nerves outside the active filter instead of ghosting them">Hide others</button>
+  <div class="tgroup layers" role="group" aria-label="Layers">
+    <button type="button" class="tbtn tog" id="t-skin" aria-pressed="true" data-i18n="t_skin">Skin</button>
+    <button type="button" class="tbtn tog" id="t-skeleton" aria-pressed="true" data-i18n="t_skeleton">Skeleton</button>
+    <button type="button" class="tbtn tog" id="t-organs" aria-pressed="true" data-i18n="t_organs">Organs</button>
+    <button type="button" class="tbtn tog" id="t-labels" aria-pressed="true" data-i18n="t_labels">Labels</button>
+    <button type="button" class="tbtn tog" id="t-signals" aria-pressed="true" data-i18n="t_signals">Signals</button>
+    <button type="button" class="tbtn tog" id="t-rotate" aria-pressed="true" data-i18n="t_rotate">Rotate</button>
+    <button type="button" class="tbtn tog" id="t-isolate" aria-pressed="false" data-i18n="t_isolate">Hide others</button>
   </div>
-  <label class="tgroup select">
-    <span>Colour</span>
+  <label class="tgroup select colour">
+    <span data-i18n="colour">Colour</span>
     <select id="color-mode" aria-label="Colour nerves by">
-      <option value="systems">Systems</option>
-      <option value="function">Function</option>
-      <option value="atlas">Classic atlas</option>
+      <option value="systems" data-i18n="c_systems">Systems</option>
+      <option value="function" data-i18n="c_function">Function</option>
+      <option value="atlas" data-i18n="c_atlas">Classic atlas</option>
+    </select>
+  </label>
+  <label class="tgroup select">
+    <span data-i18n="quality">Quality</span>
+    <select id="quality-sel" aria-label="Rendering quality">
+      <option value="auto" data-i18n="q_auto">Auto</option>
+      <option value="low" data-i18n="q_low">Low</option>
+      <option value="medium" data-i18n="q_medium">Medium</option>
+      <option value="high" data-i18n="q_high">High</option>
+      <option value="ultra" data-i18n="q_ultra">Ultra</option>
     </select>
   </label>
 </nav>
 
 <div id="legend" aria-live="polite"></div>
 <div id="tooltip" hidden></div>
+<div id="toast" role="status" hidden></div>
+
+<section id="tourbar" hidden aria-live="polite">
+  <div class="tb-head">
+    <span class="tb-dot"></span>
+    <h3 id="tour-title" dir="auto"></h3>
+    <span id="tour-step" class="count"></span>
+  </div>
+  <p id="tour-cap" dir="auto"></p>
+  <div class="tb-foot">
+    <div id="tour-dots" class="dots"></div>
+    <div class="tb-btns">
+      <button id="tour-prev" class="ghost-btn" type="button" data-i18n="prev">Back</button>
+      <button id="tour-play" class="ghost-btn primary" type="button" data-i18n="pause">Pause</button>
+      <button id="tour-next" class="ghost-btn" type="button" data-i18n="next">Next</button>
+      <button id="tour-exit" class="icon-btn" type="button" aria-label="Exit tour">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="quizbar" hidden aria-live="polite">
+  <div class="tb-head">
+    <h3 data-i18n="quizTitle" dir="auto">Identify the glowing structure</h3>
+    <span id="quiz-score" class="count"></span>
+  </div>
+  <div id="quiz-options" class="qopts"></div>
+  <p id="quiz-feedback" dir="auto" hidden></p>
+  <div class="tb-foot">
+    <span id="quiz-streak" class="count"></span>
+    <div class="tb-btns">
+      <button id="quiz-next" class="ghost-btn primary" type="button" data-i18n="nextQ" hidden>Next question</button>
+      <button id="quiz-exit" class="icon-btn" type="button" aria-label="Exit quiz">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="microbar" hidden>
+  <div class="tb-head">
+    <h3 id="micro-title" dir="auto"></h3>
+    <button id="micro-back" class="ghost-btn" type="button" data-i18n="backBody">Back to body</button>
+  </div>
+  <p id="micro-cap" dir="auto"></p>
+</section>
+
+<div id="tours-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="tours-h">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h2 id="tours-h" data-i18n="toursTitle" dir="auto">Cinematic pathway tours</h2>
+        <p data-i18n="toursSub" dir="auto">Follow a real signal through the nervous system, step by step.</p>
+      </div>
+      <button class="icon-btn modal-close" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="tour-list" class="tour-list"></div>
+  </div>
+</div>
+
+<div id="sources-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="src-h">
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <div>
+        <h2 id="src-h" data-i18n="sourcesTitle" dir="auto">Sources &amp; accuracy</h2>
+        <p data-i18n="sourcesNote" dir="auto"></p>
+      </div>
+      <button class="icon-btn modal-close" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <ol id="ref-list" class="ref-list"></ol>
+  </div>
+</div>
 
 <div id="intro">
   <div class="bar top"></div>
   <div class="bar bottom"></div>
   <div class="intro-copy">
-    <p class="eyebrow">Interactive anatomy</p>
+    <p class="eyebrow" data-i18n="introEyebrow">Interactive anatomy</p>
     <h2>Systema nervosum</h2>
-    <p class="intro-sub">12 cranial pairs · 31 spinal pairs · <span id="stat-count">—</span> modelled nerve structures</p>
-    <p class="intro-hint">Click any nerve to study it. Drag to orbit, scroll to zoom.</p>
+    <p class="intro-sub" id="intro-sub" dir="auto">12 cranial pairs · 31 spinal pairs</p>
+    <p class="intro-hint" data-i18n="introHint" dir="auto">Click any nerve to study it. Drag to orbit, scroll or pinch to zoom.</p>
   </div>
 </div>
 
+<div id="fatal" hidden></div>
 <noscript><p class="noscript">This atlas needs JavaScript and WebGL.</p></noscript>
 <script type="module" src="js/main.js"></script>
 </body>

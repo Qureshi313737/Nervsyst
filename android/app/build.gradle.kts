@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.neuromap.atlas"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = runNumber
         versionName = "1.0.$runNumber"
     }

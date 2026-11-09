@@ -38,18 +38,21 @@ while (queue.length) {
   for (const m of src.matchAll(/from\s+'(\.{1,2}\/[^']+)'/g)) queue.push(path.posix.normalize(path.posix.join(path.posix.dirname(rel), m[1])));
 }
 
-// 3. fonts (latin + latin-ext, woff2 only)
+// 3. fonts (only the script subsets each face is used for, woff2 only)
 const FONTS = [
-  ['cormorant-garamond', ['500', '600', '500-italic']],
-  ['ibm-plex-sans', ['400', '500', '600']],
-  ['ibm-plex-mono', ['400', '500']],
+  ['cormorant-garamond', ['500', '600', '500-italic'], ['latin', 'latin-ext']],
+  ['ibm-plex-sans', ['400', '500', '600'], ['latin', 'latin-ext']],
+  ['ibm-plex-mono', ['400', '500'], ['latin', 'latin-ext']],
+  ['noto-sans-devanagari', ['400', '500', '600'], ['devanagari']],
+  ['noto-nastaliq-urdu', ['400', '600'], ['arabic']],
 ];
 let css = '';
-for (const [pkg, weights] of FONTS) {
+for (const [pkg, weights, subsets] of FONTS) {
+  const subset = new RegExp(`^/\\* ${pkg}-(${subsets.join('|')})-\\d`);
   for (const w of weights) {
     const text = fs.readFileSync(path.join(NM, '@fontsource', pkg, `${w}.css`), 'utf8');
     for (const block of text.split(/\n(?=\/\*)/)) {
-      if (!/-latin(-ext)?-/.test(block.split('\n')[0])) continue;
+      if (!subset.test(block.split('\n')[0])) continue;
       const out = block.replace(/src:[^;]+;/, (src) => {
         const woff2 = src.match(/url\(\.\/files\/([^)]+\.woff2)\)/)[1];
         copy(path.join(NM, '@fontsource', pkg, 'files', woff2), path.join(OUT, 'vendor/fonts', woff2));
