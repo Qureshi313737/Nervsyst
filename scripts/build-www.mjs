@@ -16,6 +16,7 @@ const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true })
 const copyDir = (from, to) => { for (const f of fs.readdirSync(from)) { const s = path.join(from, f); fs.statSync(s).isDirectory() ? copyDir(s, path.join(to, f)) : copy(s, path.join(to, f)); } };
 
 // 1. app sources
+copy(path.join(ROOT, 'privacy.html'), path.join(OUT, 'privacy.html'));
 copyDir(path.join(ROOT, 'css'), path.join(OUT, 'css'));
 copyDir(path.join(ROOT, 'js'), path.join(OUT, 'js'));
 

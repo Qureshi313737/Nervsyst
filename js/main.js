@@ -29,6 +29,9 @@ const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<
 
 setLang(new URLSearchParams(location.search).get('lang') || store.get('lang', 'en'));
 
+// Let the Lumifya intro form its wordmark before the heavy 3D build blocks the thread.
+await Promise.race([window.__splash?.formed ?? Promise.resolve(), new Promise((r) => setTimeout(r, 4500))]);
+
 /* ============================================================== renderer */
 const host = $('#stage');
 let renderer;
@@ -1283,6 +1286,7 @@ translateDom();
 applyVisuals();
 requestAnimationFrame(frame);
 document.body.classList.add('loaded');
+requestAnimationFrame(() => window.__splash?.finish());
 document.querySelectorAll('[data-scale]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scale === 'body')));
 if (reduceMotion) {
   endIntro();

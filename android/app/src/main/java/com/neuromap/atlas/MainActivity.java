@@ -15,6 +15,8 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.webkit.WebViewAssetLoader;
 
@@ -25,6 +27,7 @@ public class MainActivity extends Activity {
     private static final int BG = Color.rgb(3, 6, 11);
 
     private WebView web;
+    private Object backCallback; // OnBackInvokedCallback on API 33+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +85,39 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState != null) web.restoreState(savedInstanceState);
         else web.loadUrl(START_URL);
+
+        // Android 13+: back gestures arrive through OnBackInvokedDispatcher; from
+        // Android 16 (target API 36) onBackPressed() is no longer called at all.
+        if (Build.VERSION.SDK_INT >= 33) backCallback = Api33.registerBack(this);
     }
 
-    /** Back closes the open dossier or filter drawer before leaving the app. */
+    /** Kept in its own class so older devices never load the API 33 types. */
+    private static final class Api33 {
+        static Object registerBack(MainActivity a) {
+            OnBackInvokedCallback cb = a::handleBack;
+            a.getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, cb);
+            return cb;
+        }
+
+        static void unregisterBack(MainActivity a, Object cb) {
+            a.getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) cb);
+        }
+    }
+
+    /** Android 12 and older. */
     @Override
+    @SuppressWarnings("deprecation")
     public void onBackPressed() {
+        handleBack();
+    }
+
+    /** Back closes dialogs, the dossier, tours, quiz or micro view before leaving the app. */
+    void handleBack() {
+        String url = web.getUrl();
+        if (url != null && !url.contains("index.html") && web.canGoBack()) {
+            web.goBack(); // e.g. returning from the privacy policy page
+            return;
+        }
         web.evaluateJavascript(
                 "(function(){var m=window.__neuromap;"
                         + "var open=[].slice.call(document.querySelectorAll('.modal')).filter(function(x){return !x.hidden;});"
@@ -123,6 +154,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (Build.VERSION.SDK_INT >= 33 && backCallback != null) Api33.unregisterBack(this, backCallback);
         web.destroy();
         super.onDestroy();
     }
