@@ -161,6 +161,13 @@ export const INFO = {
     fact: 'The cord appears to "ascend" during development only because the vertebral column grows faster than the cord does.',
   },
 
+  cerebrum: {
+    name: 'Cerebrum', latin: 'Cerebrum', short: 'Cerebral hemispheres', fn: 'cns', group: 'cns', region: 'head',
+    tags: ['cns', 'lobes'],
+    summary: 'The two cerebral hemispheres, joined by the corpus callosum. Their 2–4 mm thick cortex is folded into gyri and sulci, so about two-thirds of it is hidden in the folds. Click a lobe to study it.',
+    facts: [['Neurons', '≈ 16 billion in the cerebral cortex (of ≈ 86 billion in the whole brain)'], ['Lobes', 'Frontal, parietal, temporal, occipital (+ insula, limbic)'], ['Blood supply', 'Anterior, middle and posterior cerebral arteries']],
+    fact: 'The brain is about 2% of body weight but uses roughly 20% of the body\'s resting oxygen.',
+  },
   /* ---------------------------------------------------------- deep brain */
   thalamus: {
     name: 'Thalamus', latin: 'Thalamus', short: 'Diencephalon', fn: 'cns', group: 'deep', region: 'head',
@@ -790,7 +797,7 @@ export const INFO = {
     sensory: ['Posterior thigh and popliteal fossa', 'Lower buttock (inferior cluneal nerves)', 'Perineum (perineal branches)'],
     clinical: 'Can be irritated by prolonged sitting or injured with the sciatic nerve.',
     test: 'Light touch on the back of the thigh.',
-    fact: 'It supplies the largest single area of skin of any nerve in the body.',
+    fact: 'Its territory runs from the lower buttock to the upper calf, one of the largest areas supplied by a single cutaneous nerve.',
   },
   sciatic: {
     name: 'Sciatic nerve', latin: 'Nervus ischiadicus', short: 'L4–S3', fn: 'mixed', group: 'sacral', region: 'lower',

@@ -58,6 +58,8 @@ export function noise3(x, y, z) {
 }
 
 export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+/** Global level of detail (1 = full). Lowered on weak devices before geometry is built. */
+export const LOD = { k: 1 };
 export const lerp = (a, b, t) => a + (b - a) * t;
 export function smoothstep(a, b, x) {
   const t = clamp((x - a) / (b - a), 0, 1);
@@ -88,7 +90,8 @@ export function controlPointT(points, idx) {
  */
 export function taperedTube(curve, { radius = () => 0.05, radial = 10, segments, capStart = false, capEnd = true } = {}) {
   const length = curve.getLength();
-  const segs = segments ?? Math.min(420, Math.max(14, Math.ceil(length * 30)));
+  const segs = segments ?? Math.min(420, Math.max(10, Math.ceil(length * 30 * LOD.k)));
+  radial = Math.max(5, Math.round(radial * Math.sqrt(LOD.k)));
   const frames = curve.computeFrenetFrames(segs, false);
   const pos = [], nor = [], uv = [], idx = [];
   const P = new THREE.Vector3(), N = new THREE.Vector3();
@@ -198,7 +201,7 @@ export const LOBE_COLORS = {
  * Returns geometry with `color` (natural tissue) and `lobeColor` attributes.
  */
 export function hemisphereGeometry(side = 1) {
-  let g = new THREE.SphereGeometry(1, 200, 150);
+  let g = new THREE.SphereGeometry(1, Math.round(200 * Math.max(0.55, LOD.k)), Math.round(150 * Math.max(0.55, LOD.k)));
   g.deleteAttribute('normal');
   g.deleteAttribute('uv');
   g = mergeVertices(g);
@@ -262,7 +265,7 @@ export function hemisphereGeometry(side = 1) {
 
 /** Cerebellum with transverse folia and a midline vermis. */
 export function cerebellumGeometry() {
-  let g = new THREE.SphereGeometry(1, 160, 110);
+  let g = new THREE.SphereGeometry(1, Math.round(160 * Math.max(0.55, LOD.k)), Math.round(110 * Math.max(0.55, LOD.k)));
   g.deleteAttribute('normal');
   g.deleteAttribute('uv');
   g = mergeVertices(g);

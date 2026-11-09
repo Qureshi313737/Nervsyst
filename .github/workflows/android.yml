@@ -38,19 +38,23 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build signed APK
+      - name: Build signed APK and App Bundle
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon --stacktrace
+          ./gradlew assembleRelease bundleRelease --no-daemon --stacktrace
 
-      - name: Rename APK
-        run: cp android/app/build/outputs/apk/release/app-release.apk Neuromap.apk
+      - name: Collect outputs
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk Neuromap.apk
+          cp android/app/build/outputs/bundle/release/app-release.aab Neuromap.aab
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Neuromap-apk
-          path: Neuromap.apk
+          name: Neuromap-android
+          path: |
+            Neuromap.apk
+            Neuromap.aab
 
       - name: Publish release
         if: github.ref == 'refs/heads/main'
@@ -59,8 +63,12 @@ jobs:
           tag_name: apk-v1.0.${{ github.run_number }}
           name: Neuromap Android v1.0.${{ github.run_number }}
           make_latest: true
-          files: Neuromap.apk
+          files: |
+            Neuromap.apk
+            Neuromap.aab
           body: |
             Offline Android app of the Neuromap 3D nervous system atlas.
 
-            **Install:** download `Neuromap.apk` on your phone, open it, and allow "Install unknown apps" for your browser or file manager when Android asks. Requires Android 8.0 or newer.
+            **Install on a phone:** download `Neuromap.apk`, open it, and allow "Install unknown apps" for your browser or file manager when Android asks. Requires Android 8.0 or newer.
+
+            **Google Play:** `Neuromap.aab` is the Android App Bundle for upload to the Play Console. It is signed with the repository's public sideload key; for a store listing, enrol in Play App Signing or rebuild with your own private upload key.

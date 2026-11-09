@@ -10,22 +10,48 @@ correlation, how it is examined, and a memory aid.
 Functionality is deliberately simple (filter → look → click → read) so the focus
 stays on the anatomy.
 
+## What's inside
+
+- **Three scales of organisation:** *Body* (whole nervous system), *Nerve fibre* (epineurium → perineurium → fascicles → myelinated and unmyelinated fibres, with saltatory conduction) and *Neuron* (motor neuron → myelinated axon → neuromuscular junction, animated from synaptic input to muscle contraction). Every part is clickable.
+- **Six cinematic pathway tours:** a glowing signal travels real routes while the camera tracks it and captions explain each relay.
+  - Knee-jerk reflex arc
+  - Corticospinal tract: left cortex → decussation → right hand
+  - Spinothalamic tract (pain)
+  - Dorsal columns (touch)
+  - Visual pathway
+  - Fight-or-flight vs rest-and-digest
+- **Three learning levels:**
+  - *Basic*: plain-language explanation, summary and a memory aid.
+  - *Standard*: course, supply, branches, clinical correlation and examination.
+  - *Advanced*: adds anatomical variations, embryology and numbered references.
+- **Three languages:** English, हिन्दी and اردو. The interface, simple explanations, tours, quiz and filter notes are all translated. Detailed clinical text stays in English, the language of the cited textbooks, and anatomical terms are kept in English inside Hindi and Urdu sentences.
+- **Quiz:** identify the glowing structure from four options, with score and streak.
+- **References:** 33 sources, from standard texts (Gray's 42e, Moore 9e, Netter 8e, Snell, Kandel 6e, Purves, Blumenfeld, Guyton, Langman, Terminologia Anatomica 2) to primary papers (Hodgkin & Huxley 1952, Huxley & Stämpfli 1949, Penfield & Boldrey 1937, Scoville & Milner 1957, Azevedo 2009, Sereno 2020, Smoll 2010, ISNCSCI 2011 and others). They are listed under the **Sources** button and per structure at the Advanced level.
+- **Smooth on any device:**
+  - It picks a quality tier (Low/Medium/High/Ultra) from the device and lowers geometry detail on weak GPUs.
+  - It then watches the frame rate and lowers resolution, or the tier, if motion stutters.
+  - Each nerve is drawn as one merged mesh to keep draw calls low.
+  - You can override the choice in **Quality**.
+
 ## Android app (APK)
 
-**Download:** https://github.com/Qureshi313737/Nervsyst/releases/latest/download/Neuromap.apk
+**Download APK:** https://github.com/Qureshi313737/Nervsyst/releases/latest/download/Neuromap.apk
+
+**App Bundle for Google Play (AAB):** https://github.com/Qureshi313737/Nervsyst/releases/latest/download/Neuromap.aab
 
 Open that link on your phone, open the downloaded file and allow "Install unknown apps"
 when Android asks. Needs Android 8.0+. The app works fully offline: three.js and the
 fonts are bundled inside the APK.
 
-The APK is built by `.github/workflows/android.yml` on every push to `main` and attached
-to a GitHub Release. To build it yourself (needs the Android SDK and JDK 17):
+The APK and AAB are built by `.github/workflows/android.yml` on every push to `main` and attached
+to a GitHub Release. Both target Android 15 (API 35), as Google Play requires. To build it yourself (needs the Android SDK and JDK 17):
 
 ```bash
 npm ci
 npm run build:www            # copies the site + vendored three.js/fonts into android/
-cd android && ./gradlew assembleRelease
+cd android && ./gradlew assembleRelease bundleRelease
 # → android/app/build/outputs/apk/release/app-release.apk
+# → android/app/build/outputs/bundle/release/app-release.aab
 ```
 
 The app is a native WebView shell (`android/app/src/main/java/.../MainActivity.java`)
@@ -86,6 +112,11 @@ js/anatomy.js     Landmarks, spinal levels and every nerve's 3D path
 js/body.js        Skin, skeleton, organs, brain, brainstem and cord meshes
 js/geometry.js    Noise, tapered tubes, lofts, procedural brain and cerebellum
 js/info.js        Knowledge base: every structure's anatomy and clinical notes
+js/content.js     References, simple explanations (en/hi/ur), variations, embryology, micro-anatomy
+js/i18n.js        Interface strings in English, Hindi and Urdu
+js/tours.js       Pathway tour data and the tour player
+js/micro.js       Nerve-fibre and neuron/NMJ scenes
+js/quality.js     Adaptive quality and dynamic resolution
 scripts/          build-www.mjs: offline bundle for the Android app
 android/          Android WebView app (Gradle project)
 ```
