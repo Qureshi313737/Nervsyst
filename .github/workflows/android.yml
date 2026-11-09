@@ -1,0 +1,66 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main, ccr-dc8cd523-myeiqp]
+    paths:
+      - index.html
+      - css/**
+      - js/**
+      - android/**
+      - scripts/**
+      - package.json
+      - package-lock.json
+      - .github/workflows/android.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Bundle the site for offline use
+        run: |
+          npm ci
+          npm run build:www
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build signed APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk Neuromap.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Neuromap-apk
+          path: Neuromap.apk
+
+      - name: Publish release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-v1.0.${{ github.run_number }}
+          name: Neuromap Android v1.0.${{ github.run_number }}
+          make_latest: true
+          files: Neuromap.apk
+          body: |
+            Offline Android app of the Neuromap 3D nervous system atlas.
+
+            **Install:** download `Neuromap.apk` on your phone, open it, and allow "Install unknown apps" for your browser or file manager when Android asks. Requires Android 8.0 or newer.

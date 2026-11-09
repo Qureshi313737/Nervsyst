@@ -23,7 +23,9 @@ const store = {
 /* ================================================================ scene */
 const host = $('#stage');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const isTouch = window.matchMedia('(pointer: coarse)').matches;
+// phones: cap resolution so bloom + post stay smooth on mobile GPUs
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, isTouch ? 1.5 : 2));
 renderer.setSize(host.clientWidth, host.clientHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;

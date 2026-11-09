@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="neuro_bg">#03060B</color>
+    <color name="icon_bg">#06101C</color>
+    <style name="Theme.Neuromap" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/neuro_bg</item>
+        <item name="android:statusBarColor">@color/neuro_bg</item>
+        <item name="android:navigationBarColor">@color/neuro_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

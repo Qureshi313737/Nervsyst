@@ -10,6 +10,28 @@ correlation, how it is examined, and a memory aid.
 Functionality is deliberately simple (filter → look → click → read) so the focus
 stays on the anatomy.
 
+## Android app (APK)
+
+**Download:** https://github.com/Qureshi313737/Nervsyst/releases/latest/download/Neuromap.apk
+
+Open that link on your phone, open the downloaded file and allow "Install unknown apps"
+when Android asks. Needs Android 8.0+. The app works fully offline: three.js and the
+fonts are bundled inside the APK.
+
+The APK is built by `.github/workflows/android.yml` on every push to `main` and attached
+to a GitHub Release. To build it yourself (needs the Android SDK and JDK 17):
+
+```bash
+npm ci
+npm run build:www            # copies the site + vendored three.js/fonts into android/
+cd android && ./gradlew assembleRelease
+# → android/app/build/outputs/apk/release/app-release.apk
+```
+
+The app is a native WebView shell (`android/app/src/main/java/.../MainActivity.java`)
+that serves the bundled files through `WebViewAssetLoader`. It asks for no permissions.
+The back button closes the open dossier or filter drawer before leaving the app.
+
 ## Run it
 
 It is a static site with no build step. ES modules need an HTTP server (opening
@@ -64,6 +86,8 @@ js/anatomy.js     Landmarks, spinal levels and every nerve's 3D path
 js/body.js        Skin, skeleton, organs, brain, brainstem and cord meshes
 js/geometry.js    Noise, tapered tubes, lofts, procedural brain and cerebellum
 js/info.js        Knowledge base: every structure's anatomy and clinical notes
+scripts/          build-www.mjs: offline bundle for the Android app
+android/          Android WebView app (Gradle project)
 ```
 
 To add a nerve, add a path in `buildNerves()` in `js/anatomy.js` and an entry with the same key in `INFO` in `js/info.js`. Paths run from proximal to distal so that the signal pulses point the right way.
